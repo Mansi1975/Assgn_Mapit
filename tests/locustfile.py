@@ -1,4 +1,5 @@
 import os
+import time
 from locust import User, task, events
 from locust.env import Environment
 from locust.runners import STATE_STOPPING, STATE_STOPPED, STATE_CLEANUP
@@ -22,15 +23,38 @@ class ChatUser(WebSocketUser):
     @task
     def send_and_receive(self):
         msg = "hello from locust"
-        self.ws.send(msg)
-        _ = self.ws.recv()
+        start_time = time.time()
+
+        try:
+            self.ws.send(msg)
+            response = self.ws.recv()
+            total_time = int((time.time() - start_time) * 1000)
+
+            # ✅ This makes Locust track the request
+            self.environment.events.request.fire(
+                request_type="websocket",
+                name="send_and_receive",
+                response_time=total_time,
+                response_length=len(response),
+                exception=None
+            )
+
+        except Exception as e:
+            total_time = int((time.time() - start_time) * 1000)
+            self.environment.events.request.fire(
+                request_type="websocket",
+                name="send_and_receive",
+                response_time=total_time,
+                response_length=0,
+                exception=e
+            )
 
 # Graceful shutdown for WebSocket connections
 @events.test_stop.add_listener
 def _(environment, **kwargs):
-    for user in environment.runner.user_classes:
-        if hasattr(user, 'ws'):
+    for user_class in environment.runner.user_classes:
+        if hasattr(user_class, 'ws'):
             try:
-                user.ws.close()
+                user_class.ws.close()
             except Exception:
                 pass
