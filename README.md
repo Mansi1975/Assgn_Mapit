@@ -4,20 +4,19 @@ A comprehensive implementation and comparison of real-time chat applications usi
 
 ## Project Overview
 
-This project explores real-time communication protocols by implementing chat applications using various web frameworks. The focus is on understanding how different frameworks handle concurrent connections and comparing the performance characteristics of WebSocket versus long polling approaches.
+This project explores real-time communication protocols by implementing chat applications using various web frameworks. The focus is on understanding how different frameworks handle concurrent connections and comparing the performance characteristics of WebSocket.
 
 ## Framework Selection and Justification
 
-### Primary Frameworks Chosen
+### Frameworks Chosen
 
 1. **Node.js + ws library**
    - Event-driven, non-blocking I/O architecture
-   - Built on V8 JavaScript engine
    - Naturally handles thousands of concurrent connections through single-threaded async event loop
    - Uses lightweight ws module for WebSocket implementation
 
 2. **Python + FastAPI**
-   - Asynchronous Python framework built on Starlette (ASGI) and Pydantic
+   - Asynchronous Python framework built on  (ASGI)
    - Supports WebSockets via websockets or starlette.websockets
    - Uses async/await with asyncio for scalable concurrent client handling
 
@@ -32,7 +31,7 @@ This project explores real-time communication protocols by implementing chat app
 **FastAPI Approach:**
 - ASGI (Asynchronous Server Gateway Interface) foundation
 - Python's asyncio and coroutines enable thousands of WebSocket connections
-- Horizontal scaling possible with Gunicorn + Uvicorn workers
+- Horizontal scaling possible with Uvicorn workers
 - Structured async/await pattern for clean concurrent code
 
 ## WebSocket vs Long Polling Analysis
@@ -44,7 +43,6 @@ This project explores real-time communication protocols by implementing chat app
 | Connection Type | Full-duplex persistent connection | Simulated streaming via repeated HTTP requests |
 | Latency | Very low (real-time) | Higher due to request/response cycles |
 | Server Load | Lower (single persistent connection) | Higher (multiple HTTP requests) |
-| Real-time Capability | True real-time | Approximated real-time |
 | Scalability | Better for real-time apps, memory cost per socket | Easier to scale with stateless servers |
 | Browser Support | Requires WebSocket API support | Works with standard HTTP |
 | Firewall Compatibility | May require WSS/tunneling | Always allowed through HTTPS |
@@ -79,39 +77,21 @@ This project explores real-time communication protocols by implementing chat app
 
 ## Framework Comparison
 
-| Feature | Node.js + ws | Python + FastAPI | Django Channels | Go + Gorilla WS |
+| Feature | Node.js + ws | Python + FastAPI | 
 |---------|--------------|------------------|-----------------|-----------------|
-| Connection Model | Event-driven, non-blocking | AsyncIO with ASGI | ASGI + Redis backend | Goroutines + net/http |
-| WebSocket Support | Native via ws library | Native via Starlette | Requires channels setup | Native via Gorilla |
-| Long Polling Support | Manual implementation with Express | Native FastAPI endpoints | Views or Consumers | Custom handler |
-| Concurrent Client Scaling | Excellent (single-threaded event loop) | Excellent with Uvicorn + ASGI | Excellent via Redis | Excellent with goroutines |
-| Message Broadcast | Manual implementation required | Manual implementation required | Built-in via Channels layer | Manual broadcast implementation |
-| Performance (RPS) | ~2900+ | ~2800+ | ~2500+ (production) | ~3k-10k+ |
-| Learning Curve | Easy | Moderate | Steep | Steep (if new to Go) |
-| Proxy Compatibility | Good (requires WSS in production) | Good via Uvicorn | Good | Excellent |
-
-## Implementation Features
-
-### Core Functionality
-- Real-time bidirectional communication
-- Multi-client chat rooms
-- Message broadcasting
-- Connection management
-- Error handling and reconnection logic
-
-### Technical Implementation
-- WebSocket connection establishment and management
-- Message parsing and routing
-- Client state management
-- Scalable architecture design
+| Connection Model | Event-driven, non-blocking | AsyncIO with ASGI | 
+| WebSocket Support | Native via ws library | Native via Starlette | 
+| Long Polling Support | Manual implementation with Express | Native FastAPI endpoints |
+| Concurrent Client Scaling | Excellent (single-threaded event loop) | Excellent with Uvicorn + ASGI | 
+| Message Broadcast | Manual implementation required | Manual implementation required | 
+| Performance (RPS) | ~2900+ | ~2800+ | 
+| Proxy Compatibility | Good (requires WSS in production) | Good via Uvicorn |
 
 ## Scaling Considerations
 
-### Horizontal Scaling Support
+### Scaling Support
 - **Node.js:** PM2 process manager, load balancer integration
 - **FastAPI:** Gunicorn + Uvicorn workers
-- **Django Channels:** Redis backend for cross-process communication
-- **Go:** Built-in concurrent scaling with goroutines
 
 ### Connection Limits
 All tested frameworks can handle hundreds of thousands of open connections when properly configured with adequate system resources.
@@ -144,17 +124,14 @@ Load testing performed using Locust framework to simulate concurrent users and m
 - Message latency
 - Requests per second
 - Error rates
-- Memory usage patterns
 
 ## Conclusion
 
-**Best Use Cases:**
+**BestCases:**
 - **Node.js + ws:** Ideal for JavaScript-based stacks requiring quick deployment and excellent scalability
 - **FastAPI:** Perfect for Python ecosystems needing async real-time support with clean, maintainable code
-- **Django Channels:** Powerful for existing Django applications despite additional setup complexity
-
+- 
 **Protocol Selection:**
 - **WebSockets:** Optimal for interactive, real-time systems (chat applications, games, collaborative tools)
 - **Long Polling:** Suitable for simple notifications or environments requiring HTTP compatibility
 
-This project demonstrates that modern web frameworks can efficiently handle large numbers of concurrent connections, with the choice depending on existing technology stack, performance requirements, and development team expertise.
